@@ -1,0 +1,12 @@
+{
+    "esxi_remote_host": "esx4.noe.local",
+    "esxi_remote_username": "root",
+    "vcenter_host": "vcsa.noe.local",
+    "vcenter_username": "administrator@noe.local",
+    "vcenter_insecure": "true",
+    "vcenter_datacenter": "garage",
+    "vcenter_cluster": "vsan",
+    "vcenter_datastore": "esx4-nvme1",
+    "vcenter_dvs_switchId": "50 10 4a 3a 31 b9 49 65-5e 04 a4 a9 14 74 fe fb",
+    "vcenter_dvs_portgroupId": "dvportgroup-94"
+}

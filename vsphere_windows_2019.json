@@ -1,0 +1,97 @@
+{
+    "variables": {
+        "esxi_remote_host": "",
+        "esxi_remote_password": "{{env `ESXI_REMOTE_PASSWORD`}}",
+        "esxi_remote_username": "",
+        "vcenter_datacenter": "",
+        "vcenter_datastore": "",
+        "vcenter_host": "",
+        "vcenter_username": "",
+        "vcenter_password": "{{env `VCENTER_PASSWORD`}}",
+        "vcenter_insecure": "",
+        "vcenter_dvs_switchId": "",
+        "vcenter_dvs_portgroupId": "",
+        "iso_checksum_type": "sha256",
+        "iso_checksum": "57faf4a2ea4484cfdf5e964c539313c061c4d9cac474e723d60405f2ea02d570",
+        "iso_url": "https://software-download.microsoft.com/download/sg/17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+        "vm_disk_adapter_type": "scsi",
+        "vm_disk_size": "61440",
+        "vm_disk_type_id": "thin",
+        "vm_guest_os_type": "windows9srv-64",
+        "vm_name": "template-windows-2019"
+    },
+    "builders": [
+        {
+            "type": "vmware-iso",
+            "name": "{{ user `vm_name` }}-{{ timestamp }}",
+            "vm_name": "{{ user `vm_name` }}-{{ timestamp }}",
+            "boot_wait": "60s",
+            "boot_command": [
+                "<down>",
+                "<down>",
+                "<enter>",
+                "<wait>",
+                "<enter>"
+            ],
+            "floppy_files": [
+                "scripts/autounattend.xml",
+                "scripts/winrm.ps1"
+            ],
+            "communicator": "winrm",
+            "cpus": "2",
+            "memory": "4096",
+            "disk_adapter_type": "{{ user ` vm_disk_adapter_type` }}",
+            "disk_size": "{{ user `vm_disk_size` }}",
+            "disk_type_id": "{{ user `vm_disk_type_id` }}",
+            "guest_os_type": "{{ user `vm_guest_os_type` }}",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "iso_checksum": "{{ user `iso_checksum` }}",
+            "iso_url": "{{ user `iso_url` }}",
+            "keep_registered": true,
+            "output_directory": "/tmp/{{ user `vm_name` }}-{{ timestamp }}",
+            "remote_datastore": "{{ user `vcenter_datastore` }}",
+            "remote_host": "{{ user `esxi_remote_host` }}",
+            "remote_password": "{{ user `esxi_remote_password` }}",
+            "remote_type": "esx5",
+            "remote_username": "{{ user `esxi_remote_username` }}",
+            "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+            "version": "14",
+            "vnc_disable_password": true,
+            "winrm_password": "packer",
+            "winrm_timeout": "4h",
+            "winrm_username": "packer",
+            "vmx_data": {
+                "ethernet0.present": "TRUE",
+                "ethernet0.virtualDev": "e1000e",
+                "ethernet0.addressType": "vpx",
+                "ethernet0.dvs.portgroupId": "{{ user `vcenter_dvs_portgroupId` }}",
+                "ethernet0.dvs.switchId": "{{ user `vcenter_dvs_switchId` }}",
+                "ethernet0.startConnected": "TRUE",
+                "ethernet0.wakeOnPcktRcv": "FALSE",
+                "firmware": "efi",
+                "scsi0.virtualDev": "lsisas1068",
+                "usb_xhci.present": "TRUE"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "elevated_user": "packer",
+            "elevated_password": "packer",
+            "scripts": [
+                "scripts/Install-VMwareTools.ps1"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vsphere-template",
+            "datacenter": "{{ user `vcenter_datacenter` }}",
+            "host": "{{ user `vcenter_host` }}",
+            "insecure": "{{ user `vcenter_insecure`}}",
+            "password": "{{ user `vcenter_password` }}",
+            "username": "{{ user `vcenter_username` }}"
+        }
+    ]
+}
