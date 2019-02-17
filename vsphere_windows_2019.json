@@ -35,7 +35,7 @@
             ],
             "floppy_files": [
                 "scripts/autounattend.xml",
-                "scripts/winrm.ps1"
+                "scripts/ConfigureRemotingForAnsible.ps1"
             ],
             "communicator": "winrm",
             "cpus": "2",
