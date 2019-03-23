@@ -60,7 +60,8 @@
                 "ethernet0.dvs.switchId": "{{ user `vcenter_dvs_switchId` }}",
                 "ethernet0.startConnected": "TRUE",
                 "ethernet0.wakeOnPcktRcv": "FALSE",
-                "scsi0.virtualDev": "pvscsi"
+                "scsi0.virtualDev": "pvscsi",
+                "disk.enableUUID": 1
             }
         }
     ],

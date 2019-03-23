@@ -70,7 +70,8 @@
                 "ethernet0.wakeOnPcktRcv": "FALSE",
                 "firmware": "efi",
                 "scsi0.virtualDev": "lsisas1068",
-                "usb_xhci.present": "TRUE"
+                "usb_xhci.present": "TRUE",
+                "disk.enableUUID": 1
             }
         }
     ],
