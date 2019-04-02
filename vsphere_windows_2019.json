@@ -34,8 +34,8 @@
                 "<enter>"
             ],
             "floppy_files": [
-                "scripts/autounattend.xml",
-                "scripts/ConfigureRemotingForAnsible.ps1"
+                "scripts/windows/autounattend.xml",
+                "scripts/windows/ConfigureRemotingForAnsible.ps1"
             ],
             "communicator": "winrm",
             "cpus": "2",
@@ -43,6 +43,7 @@
             "disk_adapter_type": "{{ user ` vm_disk_adapter_type` }}",
             "disk_size": "{{ user `vm_disk_size` }}",
             "disk_type_id": "{{ user `vm_disk_type_id` }}",
+            "skip_compaction": true,
             "guest_os_type": "{{ user `vm_guest_os_type` }}",
             "iso_checksum_type": "{{ user `iso_checksum_type` }}",
             "iso_checksum": "{{ user `iso_checksum` }}",
@@ -81,7 +82,8 @@
             "elevated_user": "packer",
             "elevated_password": "packer",
             "scripts": [
-                "scripts/Install-VMwareTools.ps1"
+                "scripts/windows/Install-VMwareTools.ps1",
+                "scripts/windows/disable-auto-logon.ps1"
             ]
         }
     ],
