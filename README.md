@@ -1,13 +1,13 @@
 # Packer templates
 
-If you're looking to build vSpehre templates on the latest and greatest then this is the repo is for you.
+I set off to build CentOS 7.6 & Windows 2019 packer templates on vSphere 6.7 w/ vSAN. This ededed up being non trivial so I created this repo to capture my findings.
 
 # Requirements
 
-- vSphere 6.7
+- vSphere 6.7 (tested on U2)
 - ESXi host with ssh enabled
 - ESXi firewall allowing VNC traffic
-- dvSwitch port group for VM template
+- vSwitch for VM template
 - OVF tool
 - packer
 

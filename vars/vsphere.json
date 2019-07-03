@@ -1,12 +1,10 @@
 {
-    "esxi_remote_host": "esx4.noe.local",
+    "esxi_remote_host": "esx4.noeg.wtf",
     "esxi_remote_username": "root",
-    "vcenter_host": "vcenter.noe.local",
+    "vcenter_host": "vcenter.noeg.wtf",
     "vcenter_username": "administrator@vsphere.local",
     "vcenter_insecure": "true",
     "vcenter_datacenter": "garage",
-    "vcenter_cluster": "vsan",
-    "vcenter_datastore": "vsanDatastore",
-    "vcenter_dvs_switchId": "50 26 03 20 68 0c 99 30-41 75 b2 82 19 0c 84 b3",
-    "vcenter_dvs_portgroupId": "dvportgroup-94"
+    "vcenter_cluster": "r610",
+    "vcenter_datastore": "vsanDatastore"
 }
