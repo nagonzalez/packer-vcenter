@@ -139,3 +139,6 @@ CentOS 8.0
 source .env
 packer build -var-file=vars/virtualbox/centos_8.0.json virtualbox_centos.json
 ```
+
+# To Do:
+Centos 8 doesn't seem to have the `sys-unconfig` script anymore so we just shutdown the VM using `shutdown -h now`. We'll need to update this to ensure we're prepping the image properly. Currently, I don't see any alternate methods to achieve the same thing.
