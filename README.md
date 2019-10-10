@@ -33,6 +33,11 @@ This allows Packer to infer the guest IP from ESXi, without the VM needing to re
 ### Open VNC Ports on the Firewall:
 Packer connects to the VM using VNC, so we’ll open a range of ports to allow it to connect to it.
 
+Install VIB for persistent firewall setting:
+https://github.com/umich-vci/packer-vib
+
+For a one time setting, follow these steps.
+
 First, ensure we can edit the firewall configuration:
 
 ```shell
@@ -74,11 +79,17 @@ esxcli network firewall refresh
 CentOS 7.6
 ```
 source .env
-packer build -var-file=vars/vsphere.json vsphere_centos_7.6.json
+packer build -var-file=vars/vsphere.json -var-file=vars/centos_7.6.json vmware_vsphere_centos.json
+```
+
+CentOS 8.0
+```
+source .env
+packer build -var-file=vars/vsphere.json -var-file=vars/centos_8.0.json vmware_vsphere_centos.json
 ```
 
 Windows 2019
 ```
 source .env
-packer build -var-file=vars/vsphere.json vsphere_windows_2019.json
+packer build -var-file=vars/vsphere.json vmware_vsphere_windows_2019.json
 ```

@@ -1,0 +1,90 @@
+{
+    "variables": {
+        "esxi_remote_host": "",
+        "esxi_remote_password": "{{env `ESXI_REMOTE_PASSWORD`}}",
+        "esxi_remote_username": "",
+        "vcenter_datacenter": "",
+        "vcenter_datastore": "",
+        "vcenter_host": "",
+        "vcenter_username": "",
+        "vcenter_password": "{{env `VCENTER_PASSWORD`}}",
+        "vcenter_insecure": "",
+        "iso_checksum_type": "sha256",
+        "iso_checksum": "",
+        "iso_url": "",
+        "shutdown_command": "",
+        "vm_disk_adapter_type": "scsi",
+        "vm_disk_size": "40000",
+        "vm_disk_type_id": "thin",
+        "vm_guest_os_type": "",
+        "vm_keep_registered": "true",
+        "vm_name": "",
+        "vm_network_name": "VM Network",
+        "vm_output_directory": "./output",
+        "vm_skip_compaction": "true",
+        "vm_ssh_password": "packer",
+        "vm_ssh_username": "packer"
+    },
+    "builders": [
+        {
+            "type": "vmware-iso",
+            "name": "{{ user `vm_name` }}-{{ timestamp }}",
+            "vm_name": "{{ user `vm_name` }}-{{ timestamp }}",
+            "boot_command": [
+                "<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos/ks.cfg <enter><wait>"
+            ],
+            "disk_adapter_type": "{{ user ` vm_disk_adapter_type` }}",
+            "disk_size": "{{ user `vm_disk_size` }}",
+            "disk_type_id": "{{ user `vm_disk_type_id` }}",
+            "skip_compaction": "{{ user `vm_skip_compaction` }}",
+            "guest_os_type": "{{ user `vm_guest_os_type` }}",
+            "http_directory": "http",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "iso_checksum": "{{ user `iso_checksum` }}",
+            "iso_url": "{{ user `iso_url` }}",
+            "keep_registered": "{{ user `vm_keep_registered` }}",
+            "output_directory": "{{ user `vm_output_directory` }}",
+            "remote_datastore": "{{ user `vcenter_datastore` }}",
+            "remote_host": "{{ user `esxi_remote_host` }}",
+            "remote_password": "{{ user `esxi_remote_password` }}",
+            "remote_type": "esx5",
+            "remote_username": "{{ user `esxi_remote_username` }}",
+            "shutdown_command": "{{ user `shutdown_command` }}",
+            "ssh_password": "{{ user `vm_ssh_password` }}",
+            "ssh_username": "{{ user `vm_ssh_username` }}",
+            "ssh_wait_timeout": "60m",
+            "version": "14",
+            "vnc_disable_password": true,
+            "vmx_data": {
+                "ethernet0.present": "TRUE",
+                "ethernet0.virtualDev": "e1000e",
+                "ethernet0.addressType": "vpx",
+                "ethernet0.networkName": "{{ user `vm_network_name`}}",
+                "ethernet0.startConnected": "TRUE",
+                "ethernet0.wakeOnPcktRcv": "FALSE",
+                "scsi0.virtualDev": "pvscsi",
+                "disk.enableUUID": "TRUE"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "scripts": [
+                "scripts/centos/base.sh",
+                "scripts/centos/vmware.sh",
+                "scripts/centos/cleanup.sh"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vsphere-template",
+            "datacenter": "{{ user `vcenter_datacenter` }}",
+            "host": "{{ user `vcenter_host` }}",
+            "insecure": "{{ user `vcenter_insecure`}}",
+            "password": "{{ user `vcenter_password` }}",
+            "username": "{{ user `vcenter_username` }}"
+        }
+    ]
+}

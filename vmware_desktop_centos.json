@@ -1,8 +1,5 @@
 {
     "variables": {
-        "esxi_remote_host": "",
-        "esxi_remote_password": "{{env `ESXI_REMOTE_PASSWORD`}}",
-        "esxi_remote_username": "",
         "vcenter_datacenter": "",
         "vcenter_datastore": "",
         "vcenter_host": "",
@@ -10,17 +7,18 @@
         "vcenter_password": "{{env `VCENTER_PASSWORD`}}",
         "vcenter_insecure": "",
         "iso_checksum_type": "sha256",
-        "iso_checksum": "38d5d51d9d100fd73df031ffd6bd8b1297ce24660dc8c13a3b8b4534a4bd291c",
-        "iso_url": "http://mirrors.usc.edu/pub/linux/distributions/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso",
+        "iso_checksum": "",
+        "iso_url": "",
+        "shutdown_command": "",
         "vm_disk_adapter_type": "scsi",
         "vm_disk_size": "40000",
-        "vm_disk_type_id": "thin",
-        "vm_guest_os_type": "centos7-64",
-        "vm_keep_registered": true,
-        "vm_name": "template-centos-7.6",
+        "vm_disk_type_id": "0",
+        "vm_guest_os_type": "",
+        "vm_keep_registered": "true",
+        "vm_name": "",
         "vm_network_name": "VM Network",
         "vm_output_directory": "./packer_cache",
-        "vm_skip_compaction": true,
+        "vm_skip_compaction": "true",
         "vm_ssh_password": "packer",
         "vm_ssh_username": "packer"
     },
@@ -42,28 +40,11 @@
             "iso_checksum": "{{ user `iso_checksum` }}",
             "iso_url": "{{ user `iso_url` }}",
             "keep_registered": "{{ user `vm_keep_registered` }}",
-            "output_directory": "{{ user `vm_output_directory` }}",
-            "remote_datastore": "{{ user `vcenter_datastore` }}",
-            "remote_host": "{{ user `esxi_remote_host` }}",
-            "remote_password": "{{ user `esxi_remote_password` }}",
-            "remote_type": "esx5",
-            "remote_username": "{{ user `esxi_remote_username` }}",
-            "shutdown_command": "sudo sys-unconfig",
+            "shutdown_command": "{{ user `shutdown_command` }}",
             "ssh_password": "{{ user `vm_ssh_password` }}",
             "ssh_username": "{{ user `vm_ssh_username` }}",
             "ssh_wait_timeout": "60m",
-            "version": "14",
-            "vnc_disable_password": true,
-            "vmx_data": {
-                "ethernet0.present": "TRUE",
-                "ethernet0.virtualDev": "e1000e",
-                "ethernet0.addressType": "vpx",
-                "ethernet0.networkName": "{{ user `vm_network_name`}}",
-                "ethernet0.startConnected": "TRUE",
-                "ethernet0.wakeOnPcktRcv": "FALSE",
-                "scsi0.virtualDev": "pvscsi",
-                "disk.enableUUID": "TRUE"
-            }
+            "version": "14"
         }
     ],
     "provisioners": [
@@ -77,13 +58,17 @@
         }
     ],
     "post-processors": [
-        {
-            "type": "vsphere-template",
-            "datacenter": "{{ user `vcenter_datacenter` }}",
-            "host": "{{ user `vcenter_host` }}",
-            "insecure": "{{ user `vcenter_insecure`}}",
-            "password": "{{ user `vcenter_password` }}",
-            "username": "{{ user `vcenter_username` }}"
-        }
+        [
+          {
+            "type": "shell-local",
+            "inline": [
+              "ovftool --shaAlgorithm=SHA1 --diskMode=thin --compress=9 --name=\"centos.local\" --annotation=\"DSS CentOS Template\" \"output/{{ user `vm_name` }}-{{ timestamp }}/{{ user `vm_name` }}-{{ timestamp }}.vmx\" \"output/{{ user `vm_name` }}-{{ timestamp }}.ova\"",
+              "rm --recursive --force \"output/{{ user `vm_name` }}-{{ timestamp }}\""
+            ],
+            "only": [
+              "{{ user `vm_name` }}-{{ timestamp }}"
+            ]
+          }
+        ]
     ]
 }
