@@ -3,11 +3,27 @@
 I set off to build CentOS 7.6 & Windows 2019 packer templates on vSphere 6.7 w/ vSAN. This ededed up being non trivial so I created this repo to capture my findings.
 
 # Requirements
+Any one of the following are required to build templates depending on your needs.
 
+### VMware Desktop
+- VMware Workstation/Fusion
+- [OVF Tool](https://code.vmware.com/web/tool/4.3.0/ovf)
+    - After installation, create a symlink (MacOS)
+        - `ln -s /Applications/VMware\ OVF\ Tool/ovftool /usr/local/bin/ovftool`
+- Packer
+
+### VMware vSphere
 - vSphere 6.7 (tested on U2)
 - ESXi host with ssh enabled
 - ESXi firewall allowing VNC traffic
 - vSwitch for VM template
+- [OVF Tool](https://code.vmware.com/web/tool/4.3.0/ovf)
+    - After installation, create a symlink (MacOS)
+        - `ln -s /Applications/VMware\ OVF\ Tool/ovftool /usr/local/bin/ovftool`
+- Packer
+
+### Virtualbox
+- Virtualbox
 - [OVF Tool](https://code.vmware.com/web/tool/4.3.0/ovf)
     - After installation, create a symlink (MacOS)
         - `ln -s /Applications/VMware\ OVF\ Tool/ovftool /usr/local/bin/ovftool`
@@ -76,20 +92,50 @@ esxcli network firewall refresh
 
 # Packer builds
 
+### VMware Workstation
+
 CentOS 7.6
 ```
 source .env
-packer build -var-file=vars/vsphere.json -var-file=vars/centos_7.6.json vmware_vsphere_centos.json
+packer build -var-file=vars/vmware/centos_7.6.json vmware_desktop_centos.json
 ```
 
 CentOS 8.0
 ```
 source .env
-packer build -var-file=vars/vsphere.json -var-file=vars/centos_8.0.json vmware_vsphere_centos.json
+packer build -var-file=vars/vmware/centos_8.0.json vmware_desktop_centos.json
+```
+
+### VMware vSphere
+
+CentOS 7.6
+```
+source .env
+packer build -var-file=vars/vmware/vsphere.json -var-file=vars/vmware/centos_7.6.json vmware_vsphere_centos.json
+```
+
+CentOS 8.0
+```
+source .env
+packer build -var-file=vars/vmware/vsphere.json -var-file=vars/vmware/centos_8.0.json vmware_vsphere_centos.json
 ```
 
 Windows 2019
 ```
 source .env
-packer build -var-file=vars/vsphere.json vmware_vsphere_windows_2019.json
+packer build -var-file=vars/vmware/vsphere.json vmware_vsphere_windows_2019.json
+```
+
+### Virtualbox
+
+CentOS 7.6
+```
+source .env
+packer build -var-file=vars/virtualbox/centos_7.6.json virtualbox_centos.json
+```
+
+CentOS 8.0
+```
+source .env
+packer build -var-file=vars/virtualbox/centos_8.0.json virtualbox_centos.json
 ```
