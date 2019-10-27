@@ -11,7 +11,6 @@
         "vm_keep_registered": "true",
         "vm_name": "",
         "vm_network_name": "VM Network",
-        "vm_output_directory": "./output",
         "vm_skip_compaction": "true",
         "vm_ssh_password": "packer",
         "vm_ssh_username": "packer"
@@ -56,8 +55,9 @@
           {
             "type": "shell-local",
             "inline": [
-              "ovftool --shaAlgorithm=SHA1 --diskMode=thin --compress=9 --name=\"centos.local\" --annotation=\"CentOS Template\" \"output/{{ user `vm_name` }}-{{ timestamp }}/{{ user `vm_name` }}-{{ timestamp }}.vmx\" \"output/{{ user `vm_name` }}-{{ timestamp }}.ova\"",
-              "rm --recursive --force \"output/{{ user `vm_name` }}-{{ timestamp }}\""
+              "mkdir -p output",
+              "ovftool --shaAlgorithm=SHA1 --diskMode=thin --compress=9 --name=\"centos.local\" --annotation=\"CentOS Template\" \"output-{{ user `vm_name` }}-{{ timestamp }}/{{ user `vm_name` }}-{{ timestamp }}.vmx\" \"output/{{ user `vm_name` }}-{{ timestamp }}.ova\"",
+              "rm -rf \"output-{{ user `vm_name` }}-{{ timestamp }}\""
             ],
             "only": [
               "{{ user `vm_name` }}-{{ timestamp }}"

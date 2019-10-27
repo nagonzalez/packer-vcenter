@@ -106,6 +106,12 @@ source .env
 packer build -var-file=vars/vmware/centos_8.0.json vmware_desktop_centos.json
 ```
 
+Windows 2019
+```
+source .env
+packer build vmware_desktop_windows_2019.json
+```
+
 ### VMware vSphere
 
 CentOS 7.6
