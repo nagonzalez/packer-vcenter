@@ -7,8 +7,8 @@ set -x
 sudo service rsyslog stop
 sudo service auditd stop
 
-# Remove old kernels
-sudo package-cleanup -y --oldkernels --count=1
+# Remove old kernels (doesn't work on CentOS 8)
+# sudo package-cleanup -y --oldkernels --count=1
 
 # clean out yum
 sudo yum clean all

@@ -1,0 +1,68 @@
+{
+    "variables": {
+        "iso_checksum_type": "sha256",
+        "iso_checksum": "",
+        "iso_url": "",
+        "shutdown_command": "",
+        "vm_disk_adapter_type": "scsi",
+        "vm_disk_size": "40000",
+        "vm_disk_type_id": "0",
+        "vm_guest_os_type": "",
+        "vm_keep_registered": "true",
+        "vm_name": "",
+        "vm_network_name": "VM Network",
+        "vm_skip_compaction": "true",
+        "vm_ssh_password": "packer",
+        "vm_ssh_username": "packer"
+    },
+    "builders": [
+        {
+            "type": "vmware-iso",
+            "name": "{{ user `vm_name` }}-{{ timestamp }}",
+            "vm_name": "{{ user `vm_name` }}-{{ timestamp }}",
+            "boot_command": [
+                "<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos/ks.cfg <enter><wait>"
+            ],
+            "disk_adapter_type": "{{ user ` vm_disk_adapter_type` }}",
+            "disk_size": "{{ user `vm_disk_size` }}",
+            "disk_type_id": "{{ user `vm_disk_type_id` }}",
+            "skip_compaction": "{{ user `vm_skip_compaction` }}",
+            "guest_os_type": "{{ user `vm_guest_os_type` }}",
+            "http_directory": "http",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "iso_checksum": "{{ user `iso_checksum` }}",
+            "iso_url": "{{ user `iso_url` }}",
+            "keep_registered": "{{ user `vm_keep_registered` }}",
+            "shutdown_command": "{{ user `shutdown_command` }}",
+            "ssh_password": "{{ user `vm_ssh_password` }}",
+            "ssh_username": "{{ user `vm_ssh_username` }}",
+            "ssh_wait_timeout": "60m",
+            "version": "14"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "scripts": [
+                "scripts/centos/base.sh",
+                "scripts/centos/vmware.sh",
+                "scripts/centos/cleanup.sh"
+            ]
+        }
+    ],
+    "post-processors": [
+        [
+          {
+            "type": "shell-local",
+            "inline": [
+              "mkdir -p output",
+              "ovftool --shaAlgorithm=SHA1 --diskMode=thin --compress=9 --name=\"centos.local\" --annotation=\"CentOS Template\" \"output-{{ user `vm_name` }}-{{ timestamp }}/{{ user `vm_name` }}-{{ timestamp }}.vmx\" \"output/{{ user `vm_name` }}-{{ timestamp }}.ova\"",
+              "rm -rf \"output-{{ user `vm_name` }}-{{ timestamp }}\""
+            ],
+            "only": [
+              "{{ user `vm_name` }}-{{ timestamp }}"
+            ]
+          }
+        ]
+    ]
+}

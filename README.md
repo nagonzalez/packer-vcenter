@@ -3,11 +3,27 @@
 I set off to build CentOS 7.6 & Windows 2019 packer templates on vSphere 6.7 w/ vSAN. This ededed up being non trivial so I created this repo to capture my findings.
 
 # Requirements
+Any one of the following are required to build templates depending on your needs.
 
+### VMware Desktop
+- VMware Workstation/Fusion
+- [OVF Tool](https://code.vmware.com/web/tool/4.3.0/ovf)
+    - After installation, create a symlink (MacOS)
+        - `ln -s /Applications/VMware\ OVF\ Tool/ovftool /usr/local/bin/ovftool`
+- Packer
+
+### VMware vSphere
 - vSphere 6.7 (tested on U2)
 - ESXi host with ssh enabled
 - ESXi firewall allowing VNC traffic
 - vSwitch for VM template
+- [OVF Tool](https://code.vmware.com/web/tool/4.3.0/ovf)
+    - After installation, create a symlink (MacOS)
+        - `ln -s /Applications/VMware\ OVF\ Tool/ovftool /usr/local/bin/ovftool`
+- Packer
+
+### Virtualbox
+- Virtualbox
 - [OVF Tool](https://code.vmware.com/web/tool/4.3.0/ovf)
     - After installation, create a symlink (MacOS)
         - `ln -s /Applications/VMware\ OVF\ Tool/ovftool /usr/local/bin/ovftool`
@@ -32,6 +48,11 @@ This allows Packer to infer the guest IP from ESXi, without the VM needing to re
 
 ### Open VNC Ports on the Firewall:
 Packer connects to the VM using VNC, so we’ll open a range of ports to allow it to connect to it.
+
+Install VIB for persistent firewall setting:
+https://github.com/umich-vci/packer-vib
+
+For a one time setting, follow these steps.
 
 First, ensure we can edit the firewall configuration:
 
@@ -71,14 +92,59 @@ esxcli network firewall refresh
 
 # Packer builds
 
+### VMware Workstation
+
 CentOS 7.6
 ```
 source .env
-packer build -var-file=vars/vsphere.json vsphere_centos_7.6.json
+packer build -var-file=vars/vmware/centos_7.6.json vmware_desktop_centos.json
+```
+
+CentOS 8.0
+```
+source .env
+packer build -var-file=vars/vmware/centos_8.0.json vmware_desktop_centos.json
 ```
 
 Windows 2019
 ```
 source .env
-packer build -var-file=vars/vsphere.json vsphere_windows_2019.json
+packer build vmware_desktop_windows_2019.json
 ```
+
+### VMware vSphere
+
+CentOS 7.6
+```
+source .env
+packer build -var-file=vars/vmware/vsphere.json -var-file=vars/vmware/centos_7.6.json vmware_vsphere_centos.json
+```
+
+CentOS 8.0
+```
+source .env
+packer build -var-file=vars/vmware/vsphere.json -var-file=vars/vmware/centos_8.0.json vmware_vsphere_centos.json
+```
+
+Windows 2019
+```
+source .env
+packer build -var-file=vars/vmware/vsphere.json vmware_vsphere_windows_2019.json
+```
+
+### Virtualbox
+
+CentOS 7.6
+```
+source .env
+packer build -var-file=vars/virtualbox/centos_7.6.json virtualbox_centos.json
+```
+
+CentOS 8.0
+```
+source .env
+packer build -var-file=vars/virtualbox/centos_8.0.json virtualbox_centos.json
+```
+
+# To Do:
+Centos 8 doesn't seem to have the `sys-unconfig` script anymore so we just shutdown the VM using `shutdown -h now`. We'll need to update this to ensure we're prepping the image properly. Currently, I don't see any alternate methods to achieve the same thing.
