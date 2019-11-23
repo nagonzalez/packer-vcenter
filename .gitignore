@@ -1,4 +1,5 @@
 .env
+.env.ps1
 packer_cache
 output*
 tmp
