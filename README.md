@@ -114,6 +114,21 @@ packer build vmware_desktop_windows_2019.json
 
 ### VMware vSphere
 
+Setup the VMware vSphere connection variables by creating a `vsphere.json` file under `vars/vmware`
+
+Example:
+```json
+{
+    "esxi_remote_host": "192.168.1.126",
+    "esxi_remote_username": "root",
+    "vcenter_host": "192.168.1.136",
+    "vcenter_username": "administrator@vsphere.local",
+    "vcenter_insecure": "true",
+    "vcenter_datacenter": "Home",
+    "vcenter_datastore": "datastore1"
+}
+```
+
 CentOS 7.6
 ```
 source .env
