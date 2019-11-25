@@ -95,53 +95,98 @@ esxcli network firewall refresh
 ### VMware Workstation
 
 CentOS 7.6
-```
+```shell
 source .env
 packer build -var-file=vars/vmware/centos_7.6.json vmware_desktop_centos.json
 ```
 
 CentOS 8.0
-```
+```shell
 source .env
 packer build -var-file=vars/vmware/centos_8.0.json vmware_desktop_centos.json
 ```
 
 Windows 2019
-```
+```shell
 source .env
 packer build vmware_desktop_windows_2019.json
 ```
 
 ### VMware vSphere
 
-CentOS 7.6
+Setup the VMware vSphere connection variables by creating a `vsphere.json` file under `vars/vmware`
+
+Example:
+```json
+{
+    "esxi_remote_host": "192.168.1.126",
+    "esxi_remote_username": "root",
+    "vcenter_host": "192.168.1.136",
+    "vcenter_username": "administrator@vsphere.local",
+    "vcenter_insecure": "true",
+    "vcenter_datacenter": "Home",
+    "vcenter_datastore": "datastore1"
+}
 ```
+
+CentOS 7.6
+```shell
 source .env
 packer build -var-file=vars/vmware/vsphere.json -var-file=vars/vmware/centos_7.6.json vmware_vsphere_centos.json
 ```
 
-CentOS 8.0
+```powershell
+.env.ps1
+packer build -var-file="vars\vmware\vsphere.json" -var-file="vars\vmware\centos_7.6.json"
 ```
+
+CentOS 8.0
+```shell
 source .env
 packer build -var-file=vars/vmware/vsphere.json -var-file=vars/vmware/centos_8.0.json vmware_vsphere_centos.json
 ```
 
-Windows 2019
+```powershell
+.env.ps1
+packer build -var-file="vars\vmware\vsphere.json" -var-file="vars\vmware\centos_8.0.json"
 ```
+
+Windows 2019
+```shell
 source .env
 packer build -var-file=vars/vmware/vsphere.json vmware_vsphere_windows_2019.json
 ```
 
+```powershell
+.env.ps1
+packer build -var-file="vars\vmware\vsphere.json" vmware_vsphere_windows_2019.json
+```
+
+#### Optional
+If you want to apply Windows updates as part of the template creation process, you'll need to install an additional provisioner.
+
+[Packer Windows Update Provisioner](https://github.com/rgl/packer-provisioner-windows-update)
+
+You can install it in one of two ways.
+
+Chocolatey:
+`choco install packer-provisioner-windows-update`
+
+Manually:
+[Download Link](https://github.com/rgl/packer-provisioner-windows-update/releases)
+
+Once installed, use the `vmware_vsphere_windows_2019_windows_update.json` builder file instead.
+
 ### Virtualbox
 
 CentOS 7.6
-```
+```shell
 source .env
 packer build -var-file=vars/virtualbox/centos_7.6.json virtualbox_centos.json
 ```
 
 CentOS 8.0
-```
+```shell
 source .env
 packer build -var-file=vars/virtualbox/centos_8.0.json virtualbox_centos.json
 ```
